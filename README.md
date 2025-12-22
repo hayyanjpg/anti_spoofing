@@ -1,92 +1,84 @@
 # Face Anti-Spoofing Demo (Client-Specific Anomaly Detection)
+Disusun Oleh: Kelompok 8
 
-Project ini adalah implementasi sistem deteksi *Face Spoofing* (anti-pemalsuan wajah) untuk Tugas Besar Mata Kuliah [Nama Matkul]. 
+Project ini adalah implementasi sistem keamanan biometrik wajah untuk mendeteksi serangan spoofing (pemalsuan wajah). Sistem ini dikembangkan sebagai Tugas Besar, mengacu pada pendekatan "Client-Specific Anomaly Detection" (berdasarkan studi literatur Paper 3).
 
-Sistem ini menggunakan pendekatan **Client-Specific Anomaly Detection** (mengacu pada Paper 3 review jurnal), di mana model hanya dilatih menggunakan wajah asli pengguna (*One-Class SVM*). Wajah yang tidak sesuai dengan pola data asli (seperti foto cetak, video replay, atau wajah orang lain) akan dianggap sebagai anomali dan diblokir.
+Sistem bekerja dengan metode One-Class Learning, di mana model hanya mempelajari wajah asli pengguna. Segala input yang tidak sesuai dengan karakteristik wajah asli (seperti foto cetak, video replay, atau wajah orang lain) akan dianggap sebagai anomali dan akses akan ditolak.
 
-## 📋 Fitur Utama
-- **Registrasi Wajah Real-time:** Mengambil sampel wajah pengguna secara langsung.
-- **One-Class Learning:** Tidak membutuhkan data serangan (*spoof*) saat training, hanya data asli.
-- **Liveness/Anomaly Check:** Memblokir akses jika fitur wajah terdeteksi sebagai anomali (jarak fitur terlalu jauh dari data asli).
+FITUR UTAMA:
+1. Registrasi Wajah Real-time: Mengambil sampel wajah pengguna secara langsung melalui webcam.
+2. One-Class SVM Learning: Model dilatih hanya menggunakan data wajah asli, tanpa memerlukan dataset serangan (spoof).
+3. Anomaly Detection: Otomatis memblokir akses jika fitur wajah terdeteksi menyimpang dari data registrasi.
 
-## 🛠️ Persiapan (Installation)
+------------------------------------------------------
+PERSYARATAN SISTEM (PREREQUISITES)
+-------------------------------------------------------
+Pastikan Python sudah terinstall di komputer Anda. Project ini membutuhkan library berikut:
+- opencv-python
+- numpy
+- face_recognition
+- scikit-learn
 
-Pastikan Python sudah terinstall di laptop.
+Catatan Instalasi: Library 'face_recognition' memerlukan CMake dan C++ Compiler. Jika menggunakan Windows, pastikan 'Desktop development with C++' sudah terinstall via Visual Studio Installer.
 
-1. **Clone Repository ini**
-   ```bash
-   git clone [https://github.com/hayyanjpg/anti_spoofing.git](https://github.com/hayyanjpg/anti_spoofing.git)
+-------------------------------------------------------
+CARA INSTALASI
+-------------------------------------------------------
+1. Clone repository ini ke komputer Anda:
+   git clone https://github.com/hayyanjpg/anti_spoofing.git
+
+2. Masuk ke folder project:
    cd anti_spoofing
-Install Library yang Dibutuhkan Project ini membutuhkan opencv, face_recognition, dan scikit-learn.
 
-(Catatan: Library face_recognition membutuhkan CMake. Jika gagal install di Windows, pastikan "C++ development with Visual Studio" sudah terinstall).
+3. Install library yang dibutuhkan:
+   pip install opencv-python numpy face_recognition scikit-learn
 
-Jalankan perintah ini di terminal:
-
-Bash
-
-pip install opencv-python numpy face_recognition scikit-learn
-🚀 Cara Menjalankan Demo
-Jalankan script utama (pastikan nama file python-nya sesuai, misal main.py):
-
-Bash
-
+-------------------------------------------------------
+PANDUAN MENJALANKAN DEMO
+-------------------------------------------------------
+Untuk memulai program, jalankan perintah berikut di terminal:
 python main.py
-Langkah-Langkah Demo (Skenario Presentasi)
-Sistem memiliki 3 Mode: IDLE, REGISTER, dan DETECT.
 
-1. Tahap Registrasi (Mode IDLE -> REGISTER)
-Saat program pertama kali jalan (atau setelah reset), statusnya adalah IDLE.
+Sistem memiliki 3 status operasional: IDLE, REGISTER, dan DETECT.
 
-Pastikan wajah user (Dosen/Teman) terlihat di kamera.
+TAHAP 1: REGISTRASI WAJAH (IDLE -> REGISTER)
+1. Pastikan wajah pengguna terlihat jelas di kamera.
+2. Tekan tombol 'r' pada keyboard untuk memulai pengambilan sampel.
+3. PENTING: Saat proses pengambilan sampel (sekitar 50 foto), gerakkan kepala sedikit (oleh ke kiri/kanan, ubah ekspresi senyum/datar, majukan/mundurkan kepala sedikit). Hal ini agar model mengenali variasi wajah Anda dan tidak kaku (overfitting).
+4. Tunggu hingga proses training selesai dan sistem masuk ke mode DETECT.
 
-Tekan tombol r pada keyboard untuk mulai merekam wajah asli.
+TAHAP 2: PENGUJIAN (DETECT)
+Setelah training selesai, sistem akan mendeteksi wajah secara real-time.
 
-PENTING: Saat proses pengambilan 50 sampel, gerak-gerakkan kepala sedikit (kiri, kanan, senyum, ubah ekspresi, maju-mundur sedikit) agar model mengenali variasi wajahmu.
+- Skenario A (Wajah Asli):
+  Arahkan wajah asli ke kamera. Sistem seharusnya menampilkan kotak HIJAU dengan status "REAL USER".
 
-Tunggu hingga proses Training One-Class SVM selesai (muncul pesan di terminal).
+- Skenario B (Serangan Spoofing):
+  Gunakan HP Anda, cari foto wajah Anda, lalu arahkan layar HP ke depan kamera laptop. Sistem seharusnya menampilkan kotak MERAH dengan status "SPOOF / BLOCKED" karena mendeteksi anomali pada tekstur/depth.
 
-2. Tahap Pengujian (Mode DETECT)
-Setelah training selesai, sistem otomatis masuk mode deteksi.
+TAHAP 3: RESET (GANTI PENGGUNA)
+Jika ingin mendemokan dengan orang yang berbeda:
+1. Tekan tombol 'c' pada keyboard.
+2. Program akan menghapus model pengguna sebelumnya dan menutup aplikasi.
+3. Jalankan ulang program untuk mendaftarkan pengguna baru.
 
-Skenario A: Akses Diterima (Wajah Asli)
+-------------------------------------------------------
+PENGATURAN SENSITIVITAS (TUNING)
+-------------------------------------------------------
+Jika hasil deteksi kurang akurat, Anda dapat mengubah parameter di bagian atas file 'main.py':
 
-Arahkan wajah asli ke kamera.
+- SAMPLE_SIZE = 50
+  Jumlah foto yang diambil saat registrasi. Semakin banyak semakin akurat, namun proses registrasi lebih lama.
 
-Hasil: Kotak Hijau bertuliskan "REAL USER".
+- NU_PARAM = 0.01
+  Tingkat toleransi error.
+  * Ubah ke 0.05 jika foto spoof (HP) sering lolos (sistem kurang ketat).
+  * Ubah ke 0.01 atau lebih kecil jika wajah asli sering terblokir (sistem terlalu ketat).
 
-Skenario B: Serangan Spoofing (Foto HP)
-
-Ambil HP, cari foto wajahmu, lalu arahkan layar HP ke kamera laptop.
-
-Hasil: Kotak Merah bertuliskan "SPOOF / BLOCKED".
-
-Penjelasan: Model SVM mendeteksi bahwa tekstur/fitur dari layar HP berbeda (anomali) dibandingkan sampel wajah asli.
-
-3. Reset Model (Ganti Orang)
-Jika ingin mencoba dengan orang lain:
-
-Tekan tombol c (Clear).
-
-Program akan menghapus model lama dan keluar.
-
-Jalankan ulang program untuk registrasi orang baru.
-
-⚙️ Konfigurasi (Tuning)
-Jika hasil deteksi terlalu sensitif (wajah asli sering diblokir) atau terlalu longgar (foto spoof tembus), ubah parameter di bagian atas file python:
-
-Python
-
-SAMPLE_SIZE = 50   # Jumlah foto saat registrasi (Makin banyak makin akurat)
-NU_PARAM = 0.01    # Sensitivitas Anomali. 
-                   # Naikkan (0.05) jika spoof sering tembus. 
-                   # Turunkan (0.01) jika wajah asli sering keblokir.
-GAMMA_PARAM = 'scale' # Biarkan 'scale' agar adaptif.
-📚 Referensi
-Code ini dibuat berdasarkan review jurnal:
-
-A hierarchical multi-modal cross-attention model for face anti-spoofing
-
-Antispoofing in face biometrics: a comprehensive study
-
-Client-Specific Anomaly Detection for Face Presentation Attack Detection
+-------------------------------------------------------
+REFERENSI JURNAL
+-------------------------------------------------------
+Program ini dibangun berdasarkan analisis dari jurnal:
+1. A hierarchical multi-modal cross-attention model for face anti-spoofing
+2. Antispoofing in face biometrics: a comprehensive study
+3. Client-Specific Anomaly Detection for Face Presentation Attack Detection
