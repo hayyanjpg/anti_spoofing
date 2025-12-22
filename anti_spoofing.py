@@ -8,7 +8,7 @@ import os
 MODEL_FILE = "user_model.pkl"
 FRAME_RESIZE = 0.25  # Perkecil frame agar proses cepat (0.25 = 1/4 ukuran asli)
 SAMPLE_SIZE = 50     # Jumlah foto wajah yang diambil saat registrasi
-NU_PARAM = 0.01      # Sensitivitas Anomali (0.01 - 0.1). Semakin kecil semakin ketat.
+NU_PARAM = 0.01      # Sensitivitas Anomali (0.01 - 0.1). Semakin kecil semakin ketat
 GAMMA_PARAM = 0.001  
 
 def save_model(clf, frame_embeddings):
@@ -27,7 +27,7 @@ def load_model():
 def main():
     cap = cv2.VideoCapture(0) # 0 untuk webcam default
     
-    # Cek apakah model user sudah ada
+    # Cek model user sudah ada atau blm, jika sudah ada dan ingin muka lain, hapus model yg sudah ada 
     model_data = load_model()
     if model_data:
         clf = model_data['model']
@@ -94,12 +94,12 @@ def main():
                     label = f"SPOOF / UNKNOWN (BLOCKED)"
                     color = (0, 0, 255) # Merah
                 
-                # Tampilkan kotak dan label
+                # Tampilkan kotak dan label nya
                 cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
                 cv2.putText(frame, label, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
                 cv2.putText(frame, f"Score: {score[0]:.2f}", (left, bottom + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)
 
-        # --- UI DISPLAY ---
+        #buat UI display perintah 
         elif mode == "IDLE":
              cv2.putText(frame, "Tekan 'r' untuk Registrasi Wajah Asli", (10, 30), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
