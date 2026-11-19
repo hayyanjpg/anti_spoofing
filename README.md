@@ -1,3 +1,5 @@
+> **STATUS: TUGAS KULIAH / PRACTICE.** Ini deteksi wajah palsu memakai One-Class SVM, bukan deteksi phishing URL. Sengaja tidak dimasukkan ke rangkuman [`phishing-detection`](https://github.com/hayyanjpg/phishing-detection).
+
 # Face Anti-Spoofing Demo (Client-Specific Anomaly Detection)
 Disusun Oleh: Kelompok 8
 
